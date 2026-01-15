@@ -1,0 +1,71 @@
+.desktop {
+  position: absolute;
+  top: 28px;
+  left: 0;
+  right: 0;
+  bottom: 70px;
+  overflow: hidden;
+}
+
+.iconGrid {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  height: 100%;
+}
+
+.desktopIcon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  width: 80px;
+  transition: background var(--transition-fast);
+}
+
+.desktopIcon:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.desktopIcon.selected {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-lg);
+  color: white;
+  transition: transform var(--transition-fast), background var(--transition-fast);
+}
+
+.desktopIcon:hover .iconWrapper {
+  transform: scale(1.05);
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.desktopIcon:active .iconWrapper {
+  transform: scale(0.95);
+}
+
+.iconLabel {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  max-width: 72px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

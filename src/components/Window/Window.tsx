@@ -1,5 +1,5 @@
 import { useRef, useCallback, useEffect, useState } from 'react';
-import type { Window as WindowType } from '../../types';
+import type { Window as WindowType, SnapPosition } from '../../types';
 import { useWindowStore } from '../../stores/windowStore';
 import { appRegistry } from '../../data/appRegistry';
 import { Minus, Square, X } from 'lucide-react';
@@ -10,6 +10,32 @@ interface WindowProps {
   children: React.ReactNode;
 }
 
+const SNAP_THRESHOLD = 20; // pixels from edge to trigger snap
+
+const detectSnapZone = (x: number, y: number): SnapPosition => {
+  const screenWidth = window.innerWidth;
+  const screenHeight = window.innerHeight;
+  const statusBarHeight = 28;
+  const dockHeight = 70;
+
+  const nearLeft = x < SNAP_THRESHOLD;
+  const nearRight = x > screenWidth - SNAP_THRESHOLD;
+  const nearTop = y < statusBarHeight + SNAP_THRESHOLD;
+  const nearBottom = y > screenHeight - dockHeight - SNAP_THRESHOLD;
+
+  // Corner snaps
+  if (nearLeft && nearTop) return 'top-left';
+  if (nearRight && nearTop) return 'top-right';
+  if (nearLeft && nearBottom) return 'bottom-left';
+  if (nearRight && nearBottom) return 'bottom-right';
+
+  // Edge snaps (half screen)
+  if (nearLeft) return 'left';
+  if (nearRight) return 'right';
+
+  return null;
+};
+
 export const Window = ({ window: win, children }: WindowProps) => {
   const {
     closeWindow,
@@ -19,12 +45,15 @@ export const Window = ({ window: win, children }: WindowProps) => {
     focusWindow,
     updateWindowPosition,
     updateWindowSize,
+    snapWindow,
+    unSnapWindow,
   } = useWindowStore();
 
   const windowRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [resizeDirection, setResizeDirection] = useState<string | null>(null);
+  const [snapPreview, setSnapPreview] = useState<SnapPosition>(null);
   const dragStart = useRef({ x: 0, y: 0, windowX: 0, windowY: 0 });
   const resizeStart = useRef({ x: 0, y: 0, width: 0, height: 0, windowX: 0, windowY: 0 });
 
@@ -39,18 +68,33 @@ export const Window = ({ window: win, children }: WindowProps) => {
   const handleTitleBarMouseDown = useCallback((e: React.MouseEvent) => {
     if (e.button !== 0 || win.state === 'maximized') return;
     e.preventDefault();
+
+    // If window is snapped, unsnap it first and adjust drag start
+    if (win.state === 'snapped' && win.preSnapSize) {
+      unSnapWindow(win.id);
+      // Center the window on the cursor based on pre-snap size
+      const halfWidth = win.preSnapSize.width / 2;
+      dragStart.current = {
+        x: e.clientX,
+        y: e.clientY,
+        windowX: e.clientX - halfWidth,
+        windowY: e.clientY - 20,
+      };
+    } else {
+      dragStart.current = {
+        x: e.clientX,
+        y: e.clientY,
+        windowX: win.position.x,
+        windowY: win.position.y,
+      };
+    }
+
     setIsDragging(true);
-    dragStart.current = {
-      x: e.clientX,
-      y: e.clientY,
-      windowX: win.position.x,
-      windowY: win.position.y,
-    };
     document.body.classList.add('dragging');
-  }, [win.position, win.state]);
+  }, [win.position, win.state, win.preSnapSize, win.id, unSnapWindow]);
 
   const handleResizeMouseDown = useCallback((e: React.MouseEvent, direction: string) => {
-    if (e.button !== 0 || win.state === 'maximized') return;
+    if (e.button !== 0 || win.state === 'maximized' || win.state === 'snapped') return;
     e.preventDefault();
     e.stopPropagation();
     setIsResizing(true);
@@ -67,7 +111,7 @@ export const Window = ({ window: win, children }: WindowProps) => {
   }, [win.size, win.position, win.state]);
 
   const handleTitleBarDoubleClick = useCallback(() => {
-    if (win.state === 'maximized') {
+    if (win.state === 'maximized' || win.state === 'snapped') {
       restoreWindow(win.id);
     } else {
       maximizeWindow(win.id);
@@ -82,6 +126,10 @@ export const Window = ({ window: win, children }: WindowProps) => {
         const newX = Math.max(0, Math.min(window.innerWidth - 100, dragStart.current.windowX + deltaX));
         const newY = Math.max(0, Math.min(window.innerHeight - 100, dragStart.current.windowY + deltaY));
         updateWindowPosition(win.id, { x: newX, y: newY });
+
+        // Detect snap zone
+        const snapZone = detectSnapZone(e.clientX, e.clientY);
+        setSnapPreview(snapZone);
       }
 
       if (isResizing && resizeDirection) {
@@ -122,6 +170,14 @@ export const Window = ({ window: win, children }: WindowProps) => {
     };
 
     const handleMouseUp = () => {
+      if (isDragging) {
+        // Apply snap if there's a preview
+        if (snapPreview) {
+          snapWindow(win.id, snapPreview);
+        }
+        setSnapPreview(null);
+      }
+
       if (isDragging || isResizing) {
         setIsDragging(false);
         setIsResizing(false);
@@ -139,13 +195,14 @@ export const Window = ({ window: win, children }: WindowProps) => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging, isResizing, resizeDirection, win.id, win.position, updateWindowPosition, updateWindowSize, minSize]);
+  }, [isDragging, isResizing, resizeDirection, win.id, win.position, updateWindowPosition, updateWindowSize, minSize, snapPreview, snapWindow]);
 
   if (win.state === 'minimized') {
     return null;
   }
 
   const isMaximized = win.state === 'maximized';
+  const isSnapped = win.state === 'snapped';
   const windowStyle = isMaximized
     ? {
         left: 0,
@@ -165,7 +222,7 @@ export const Window = ({ window: win, children }: WindowProps) => {
   return (
     <div
       ref={windowRef}
-      className={`${styles.window} ${win.isActive ? styles.active : ''} ${isMaximized ? styles.maximized : ''}`}
+      className={`${styles.window} ${win.isActive ? styles.active : ''} ${isMaximized ? styles.maximized : ''} ${isSnapped ? styles.snapped : ''}`}
       style={windowStyle}
       onMouseDown={handleMouseDown}
     >
@@ -193,9 +250,9 @@ export const Window = ({ window: win, children }: WindowProps) => {
             className={`${styles.trafficLight} ${styles.maximize}`}
             onClick={(e) => {
               e.stopPropagation();
-              isMaximized ? restoreWindow(win.id) : maximizeWindow(win.id);
+              (isMaximized || isSnapped) ? restoreWindow(win.id) : maximizeWindow(win.id);
             }}
-            title={isMaximized ? 'Restore' : 'Maximize'}
+            title={isMaximized || isSnapped ? 'Restore' : 'Maximize'}
           >
             <Square size={7} />
           </button>
@@ -208,7 +265,7 @@ export const Window = ({ window: win, children }: WindowProps) => {
         {children}
       </div>
 
-      {!isMaximized && (
+      {!isMaximized && !isSnapped && (
         <>
           <div className={`${styles.resizeHandle} ${styles.resizeN}`} onMouseDown={(e) => handleResizeMouseDown(e, 'n')} />
           <div className={`${styles.resizeHandle} ${styles.resizeS}`} onMouseDown={(e) => handleResizeMouseDown(e, 's')} />
@@ -221,5 +278,39 @@ export const Window = ({ window: win, children }: WindowProps) => {
         </>
       )}
     </div>
+  );
+};
+
+// Snap preview overlay component
+export const SnapPreviewOverlay = ({ snapPosition }: { snapPosition: SnapPosition }) => {
+  if (!snapPosition) return null;
+
+  const getPreviewStyle = () => {
+    const statusBarHeight = 28;
+    const dockHeight = 70;
+    const availableHeight = window.innerHeight - statusBarHeight - dockHeight;
+    const halfWidth = window.innerWidth / 2;
+    const halfHeight = availableHeight / 2;
+
+    switch (snapPosition) {
+      case 'left':
+        return { left: 0, top: statusBarHeight, width: halfWidth, height: availableHeight };
+      case 'right':
+        return { left: halfWidth, top: statusBarHeight, width: halfWidth, height: availableHeight };
+      case 'top-left':
+        return { left: 0, top: statusBarHeight, width: halfWidth, height: halfHeight };
+      case 'top-right':
+        return { left: halfWidth, top: statusBarHeight, width: halfWidth, height: halfHeight };
+      case 'bottom-left':
+        return { left: 0, top: statusBarHeight + halfHeight, width: halfWidth, height: halfHeight };
+      case 'bottom-right':
+        return { left: halfWidth, top: statusBarHeight + halfHeight, width: halfWidth, height: halfHeight };
+      default:
+        return {};
+    }
+  };
+
+  return (
+    <div className={styles.snapPreview} style={getPreviewStyle()} />
   );
 };

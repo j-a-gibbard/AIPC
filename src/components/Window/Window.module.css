@@ -17,6 +17,33 @@
   border-radius: 0;
 }
 
+.window.snapped {
+  border-radius: 0;
+  transition: none;
+}
+
+/* Snap preview overlay */
+.snapPreview {
+  position: fixed;
+  background: var(--color-primary);
+  opacity: 0.2;
+  border-radius: var(--radius-md);
+  pointer-events: none;
+  z-index: 9999;
+  animation: snapPreviewFade 0.15s ease-out;
+}
+
+@keyframes snapPreviewFade {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+}
+
 .titleBar {
   display: flex;
   align-items: center;

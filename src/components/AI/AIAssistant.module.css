@@ -1,30 +1,51 @@
-.assistant {
-  position: absolute;
-  top: 50%;
+.overlay {
+  position: fixed;
+  bottom: 80px;
   left: 50%;
-  transform: translate(-50%, -50%);
-  width: 360px;
-  max-height: 480px;
-  display: flex;
-  flex-direction: column;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px);
-  border-radius: var(--radius-xl);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
+  transform: translateX(-50%);
   z-index: var(--z-ai-assistant);
+  animation: slideUp 0.2s ease-out;
 }
 
-[data-theme="dark"] .assistant {
-  background: rgba(45, 45, 47, 0.85);
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.panel {
+  width: 400px;
+  max-height: 500px;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2), 0 0 0 1px var(--color-border);
+  overflow: hidden;
+}
+
+[data-theme="dark"] .panel {
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--color-border);
 }
 
 .header {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-md);
+  justify-content: space-between;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-surface-elevated);
   border-bottom: 1px solid var(--color-border-light);
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
 }
 
 .icon {
@@ -37,32 +58,78 @@
   color: var(--color-text-primary);
 }
 
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.headerButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.headerButton:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text-primary);
+}
+
 .messages {
   flex: 1;
   overflow-y: auto;
   padding: var(--spacing-md);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
-  min-height: 150px;
-  max-height: 250px;
+  gap: var(--spacing-md);
+  min-height: 200px;
+  max-height: 300px;
 }
 
 .message {
   display: flex;
-  flex-direction: column;
+  gap: var(--spacing-sm);
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .message.user {
-  align-items: flex-end;
+  justify-content: flex-end;
 }
 
 .message.assistant {
-  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.avatar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: var(--color-ai-accent);
+  color: white;
+  border-radius: 50%;
 }
 
 .messageContent {
-  max-width: 85%;
+  max-width: 80%;
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--radius-lg);
   font-size: var(--font-size-sm);
@@ -76,13 +143,15 @@
 }
 
 .message.assistant .messageContent {
-  background: var(--color-surface);
+  background: var(--color-surface-elevated);
   color: var(--color-text-primary);
   border-bottom-left-radius: var(--radius-sm);
+  border: 1px solid var(--color-border-light);
 }
 
 .messageContent p {
   margin: 0;
+  word-wrap: break-word;
 }
 
 .messageContent p + p {
@@ -91,11 +160,13 @@
 
 .typing {
   display: flex;
+  align-items: center;
   gap: 4px;
   padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--color-surface);
+  background: var(--color-surface-elevated);
   border-radius: var(--radius-lg);
   border-bottom-left-radius: var(--radius-sm);
+  border: 1px solid var(--color-border-light);
 }
 
 .typing span {
@@ -127,30 +198,63 @@
   }
 }
 
+.quickActions {
+  display: flex;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-top: 1px solid var(--color-border-light);
+  background: var(--color-surface-elevated);
+}
+
+.quickButton {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.quickButton:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text-primary);
+  border-color: var(--color-primary);
+}
+
 .inputForm {
   display: flex;
   gap: var(--spacing-sm);
   padding: var(--spacing-md);
   border-top: 1px solid var(--color-border-light);
+  background: var(--color-surface);
 }
 
 .input {
   flex: 1;
   padding: var(--spacing-sm) var(--spacing-md);
-  background: var(--color-surface);
+  background: var(--color-surface-elevated);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-full);
   font-size: var(--font-size-sm);
   color: var(--color-text-primary);
-  transition: border-color var(--transition-fast);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .input:focus {
   border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
 }
 
 .input::placeholder {
   color: var(--color-text-tertiary);
+}
+
+.input:disabled {
+  opacity: 0.7;
 }
 
 .sendButton {
@@ -172,40 +276,5 @@
 
 .sendButton:disabled {
   opacity: 0.5;
-}
-
-.quickActions {
-  padding: 0 var(--spacing-md) var(--spacing-md);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.quickActionsLabel {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
-}
-
-.quickButtons {
-  display: flex;
-  gap: var(--spacing-sm);
-}
-
-.quickButton {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-full);
-  font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
-  transition: all var(--transition-fast);
-}
-
-.quickButton:hover {
-  background: var(--color-surface-hover);
-  color: var(--color-text-primary);
-  border-color: var(--color-primary);
+  cursor: not-allowed;
 }

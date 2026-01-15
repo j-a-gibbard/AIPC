@@ -9,7 +9,8 @@ export interface Size {
   height: number;
 }
 
-export type WindowState = 'normal' | 'minimized' | 'maximized';
+export type WindowState = 'normal' | 'minimized' | 'maximized' | 'snapped';
+export type SnapPosition = 'left' | 'right' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | null;
 
 export interface Window {
   id: string;
@@ -20,6 +21,9 @@ export interface Window {
   state: WindowState;
   zIndex: number;
   isActive: boolean;
+  snapPosition?: SnapPosition;
+  preSnapPosition?: Position;
+  preSnapSize?: Size;
 }
 
 // File System types

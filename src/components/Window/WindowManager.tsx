@@ -6,10 +6,12 @@ import { Notes } from '../../apps/Notes/Notes';
 import { Browser } from '../../apps/Browser/Browser';
 import { Settings } from '../../apps/Settings/Settings';
 import { PlaceholderApp } from '../../apps/PlaceholderApp';
+import { CloudApp } from '../../apps/CloudApp';
+import { appRegistry } from '../../data/appRegistry';
 import type { SnapPosition } from '../../types';
 import styles from './Window.module.css';
 
-const appComponents: Record<string, React.ComponentType> = {
+const appComponents: Record<string, React.ComponentType<{ appId?: string }>> = {
   'file-explorer': FileExplorer,
   'notes': Notes,
   'browser': Browser,
@@ -103,6 +105,18 @@ export const WindowManager = () => {
 
       {/* Windows */}
       {windows.map(win => {
+        const app = appRegistry[win.appId];
+        const isExternal = app?.isExternal;
+
+        // Use CloudApp for external apps, otherwise use registered component or placeholder
+        if (isExternal) {
+          return (
+            <Window key={win.id} window={win}>
+              <CloudApp appId={win.appId} />
+            </Window>
+          );
+        }
+
         const AppComponent = appComponents[win.appId] || PlaceholderApp;
         return (
           <Window key={win.id} window={win}>

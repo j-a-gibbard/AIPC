@@ -97,3 +97,16 @@
   background: linear-gradient(135deg, var(--color-ai-accent) 0%, #00a67e 100%);
   box-shadow: 0 0 0 2px var(--color-ai-accent), 0 4px 12px rgba(52, 199, 89, 0.4);
 }
+
+/* Branded app icons in dock */
+.brandedIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font-family);
+}

@@ -49,15 +49,133 @@ export const appRegistry: Record<string, Application> = {
     minSize: { width: 300, height: 400 },
     allowMultipleInstances: false,
   },
+  // Google Workspace Apps
+  'google-docs': {
+    id: 'google-docs',
+    name: 'Google Docs',
+    icon: 'google-docs',
+    defaultSize: { width: 900, height: 600 },
+    minSize: { width: 400, height: 300 },
+    isExternal: true,
+    externalUrl: 'https://docs.google.com',
+    allowMultipleInstances: true,
+  },
+  'google-sheets': {
+    id: 'google-sheets',
+    name: 'Google Sheets',
+    icon: 'google-sheets',
+    defaultSize: { width: 900, height: 600 },
+    minSize: { width: 400, height: 300 },
+    isExternal: true,
+    externalUrl: 'https://sheets.google.com',
+    allowMultipleInstances: true,
+  },
+  'google-slides': {
+    id: 'google-slides',
+    name: 'Google Slides',
+    icon: 'google-slides',
+    defaultSize: { width: 900, height: 600 },
+    minSize: { width: 400, height: 300 },
+    isExternal: true,
+    externalUrl: 'https://slides.google.com',
+    allowMultipleInstances: true,
+  },
+  // Microsoft 365 Apps
+  'ms-word': {
+    id: 'ms-word',
+    name: 'Word Online',
+    icon: 'ms-word',
+    defaultSize: { width: 900, height: 600 },
+    minSize: { width: 400, height: 300 },
+    isExternal: true,
+    externalUrl: 'https://www.office.com/launch/word',
+    allowMultipleInstances: true,
+  },
+  'ms-excel': {
+    id: 'ms-excel',
+    name: 'Excel Online',
+    icon: 'ms-excel',
+    defaultSize: { width: 900, height: 600 },
+    minSize: { width: 400, height: 300 },
+    isExternal: true,
+    externalUrl: 'https://www.office.com/launch/excel',
+    allowMultipleInstances: true,
+  },
+  'ms-powerpoint': {
+    id: 'ms-powerpoint',
+    name: 'PowerPoint Online',
+    icon: 'ms-powerpoint',
+    defaultSize: { width: 900, height: 600 },
+    minSize: { width: 400, height: 300 },
+    isExternal: true,
+    externalUrl: 'https://www.office.com/launch/powerpoint',
+    allowMultipleInstances: true,
+  },
+  // Other Cloud Apps
+  'figma': {
+    id: 'figma',
+    name: 'Figma',
+    icon: 'figma',
+    defaultSize: { width: 1000, height: 700 },
+    minSize: { width: 600, height: 400 },
+    isExternal: true,
+    externalUrl: 'https://www.figma.com',
+    allowMultipleInstances: true,
+  },
+  'notion': {
+    id: 'notion',
+    name: 'Notion',
+    icon: 'notion',
+    defaultSize: { width: 900, height: 600 },
+    minSize: { width: 400, height: 300 },
+    isExternal: true,
+    externalUrl: 'https://www.notion.so',
+    allowMultipleInstances: true,
+  },
+  'slack': {
+    id: 'slack',
+    name: 'Slack',
+    icon: 'slack',
+    defaultSize: { width: 900, height: 600 },
+    minSize: { width: 400, height: 300 },
+    isExternal: true,
+    externalUrl: 'https://slack.com',
+    allowMultipleInstances: false,
+  },
+  'spotify': {
+    id: 'spotify',
+    name: 'Spotify',
+    icon: 'spotify',
+    defaultSize: { width: 900, height: 600 },
+    minSize: { width: 400, height: 300 },
+    isExternal: true,
+    externalUrl: 'https://open.spotify.com',
+    allowMultipleInstances: false,
+  },
 };
 
 export const defaultDesktopIcons = [
+  // Row 1 - Core apps
   { id: 'icon-1', appId: 'file-explorer', name: 'Files', icon: 'folder', position: { x: 0, y: 0 } },
   { id: 'icon-2', appId: 'browser', name: 'Browser', icon: 'globe', position: { x: 0, y: 1 } },
   { id: 'icon-3', appId: 'notes', name: 'Notes', icon: 'file-text', position: { x: 0, y: 2 } },
-  { id: 'icon-4', appId: 'photos', name: 'Photos', icon: 'image', position: { x: 0, y: 3 } },
-  { id: 'icon-5', appId: 'music', name: 'Music', icon: 'music', position: { x: 0, y: 4 } },
-  { id: 'icon-6', appId: 'settings', name: 'Settings', icon: 'settings', position: { x: 0, y: 5 } },
+  { id: 'icon-4', appId: 'settings', name: 'Settings', icon: 'settings', position: { x: 0, y: 3 } },
+
+  // Row 2 - Google Workspace
+  { id: 'icon-5', appId: 'google-docs', name: 'Google Docs', icon: 'google-docs', position: { x: 1, y: 0 } },
+  { id: 'icon-6', appId: 'google-sheets', name: 'Google Sheets', icon: 'google-sheets', position: { x: 1, y: 1 } },
+  { id: 'icon-7', appId: 'google-slides', name: 'Google Slides', icon: 'google-slides', position: { x: 1, y: 2 } },
+
+  // Row 3 - Microsoft 365
+  { id: 'icon-8', appId: 'ms-word', name: 'Word', icon: 'ms-word', position: { x: 2, y: 0 } },
+  { id: 'icon-9', appId: 'ms-excel', name: 'Excel', icon: 'ms-excel', position: { x: 2, y: 1 } },
+  { id: 'icon-10', appId: 'ms-powerpoint', name: 'PowerPoint', icon: 'ms-powerpoint', position: { x: 2, y: 2 } },
+
+  // Row 4 - Other cloud apps
+  { id: 'icon-11', appId: 'figma', name: 'Figma', icon: 'figma', position: { x: 3, y: 0 } },
+  { id: 'icon-12', appId: 'notion', name: 'Notion', icon: 'notion', position: { x: 3, y: 1 } },
+  { id: 'icon-13', appId: 'slack', name: 'Slack', icon: 'slack', position: { x: 3, y: 2 } },
+  { id: 'icon-14', appId: 'spotify', name: 'Spotify', icon: 'spotify', position: { x: 3, y: 3 } },
 ];
 
-export const defaultDockApps = ['file-explorer', 'browser', 'notes', 'settings'];
+export const defaultDockApps = ['file-explorer', 'browser', 'notes', 'google-docs', 'ms-word'];

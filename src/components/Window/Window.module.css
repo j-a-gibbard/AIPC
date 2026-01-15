@@ -1,0 +1,169 @@
+.window {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  background: var(--window-background);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--window-shadow);
+  overflow: hidden;
+  transition: box-shadow var(--transition-fast);
+}
+
+.window.active {
+  box-shadow: var(--window-shadow-active);
+}
+
+.window.maximized {
+  border-radius: 0;
+}
+
+.titleBar {
+  display: flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 var(--spacing-sm);
+  background: var(--window-titlebar);
+  border-bottom: 1px solid var(--window-border);
+  cursor: default;
+  flex-shrink: 0;
+}
+
+.window:not(.active) .titleBar {
+  background: var(--window-titlebar-inactive);
+}
+
+.trafficLights {
+  display: flex;
+  gap: 8px;
+  padding: 0 4px;
+}
+
+.trafficLight {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: filter var(--transition-fast);
+}
+
+.trafficLight svg {
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.trafficLights:hover .trafficLight svg {
+  opacity: 1;
+}
+
+.close {
+  background: #ff5f57;
+  color: #990000;
+}
+
+.minimize {
+  background: #febc2e;
+  color: #995700;
+}
+
+.maximize {
+  background: #28c840;
+  color: #006500;
+}
+
+.window:not(.active) .trafficLight {
+  background: var(--color-text-tertiary);
+}
+
+.title {
+  flex: 1;
+  text-align: center;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 var(--spacing-md);
+}
+
+.titleBarSpacer {
+  width: 68px;
+}
+
+.content {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Resize handles */
+.resizeHandle {
+  position: absolute;
+  z-index: 10;
+}
+
+.resizeN,
+.resizeS {
+  left: 8px;
+  right: 8px;
+  height: 5px;
+  cursor: ns-resize;
+}
+
+.resizeN {
+  top: 0;
+}
+
+.resizeS {
+  bottom: 0;
+}
+
+.resizeE,
+.resizeW {
+  top: 8px;
+  bottom: 8px;
+  width: 5px;
+  cursor: ew-resize;
+}
+
+.resizeE {
+  right: 0;
+}
+
+.resizeW {
+  left: 0;
+}
+
+.resizeNE,
+.resizeNW,
+.resizeSE,
+.resizeSW {
+  width: 10px;
+  height: 10px;
+}
+
+.resizeNE {
+  top: 0;
+  right: 0;
+  cursor: nesw-resize;
+}
+
+.resizeNW {
+  top: 0;
+  left: 0;
+  cursor: nwse-resize;
+}
+
+.resizeSE {
+  bottom: 0;
+  right: 0;
+  cursor: nwse-resize;
+}
+
+.resizeSW {
+  bottom: 0;
+  left: 0;
+  cursor: nesw-resize;
+}

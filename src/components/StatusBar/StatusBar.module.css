@@ -1,0 +1,90 @@
+.statusBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--spacing-md);
+  background: var(--statusbar-background);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--color-border-light);
+  z-index: var(--z-statusbar);
+  font-size: var(--font-size-sm);
+  color: var(--statusbar-text);
+}
+
+.left,
+.center,
+.right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.left {
+  flex: 1;
+}
+
+.center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  gap: var(--spacing-sm);
+}
+
+.right {
+  flex: 1;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+}
+
+.logoButton {
+  padding: 2px var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+}
+
+.logoButton:hover {
+  background: var(--color-surface-hover);
+}
+
+.logo {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  letter-spacing: -0.5px;
+}
+
+.date {
+  opacity: 0.8;
+}
+
+.time {
+  font-weight: 500;
+}
+
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition-fast);
+}
+
+.iconButton:hover {
+  background: var(--color-surface-hover);
+}
+
+.batteryIndicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-xs);
+}
+
+.batteryPercent {
+  opacity: 0.8;
+}

@@ -8,6 +8,7 @@ import {
   Image,
   Music,
   Plus,
+  Sparkles,
   type LucideIcon,
 } from 'lucide-react';
 import styles from './Dock.module.css';
@@ -21,7 +22,12 @@ const iconMap: Record<string, LucideIcon> = {
   music: Music,
 };
 
-export const Dock = () => {
+interface DockProps {
+  isAIOpen: boolean;
+  onToggleAI: () => void;
+}
+
+export const Dock = ({ isAIOpen, onToggleAI }: DockProps) => {
   const { windows, openWindow, focusWindow, restoreWindow } = useWindowStore();
 
   const handleAppClick = (appId: string) => {
@@ -45,6 +51,21 @@ export const Dock = () => {
   return (
     <div className={styles.dockContainer}>
       <div className={styles.dock}>
+        {/* AI Assistant Button */}
+        <button
+          className={`${styles.dockItem} ${styles.aiButton} ${isAIOpen ? styles.active : ''}`}
+          onClick={onToggleAI}
+          title="AI Assistant"
+          data-ai-trigger
+        >
+          <div className={`${styles.iconWrapper} ${styles.aiIconWrapper}`}>
+            <Sparkles size={24} strokeWidth={1.5} />
+          </div>
+          {isAIOpen && <div className={styles.runningIndicator} />}
+        </button>
+
+        <div className={styles.divider} />
+
         {Array.from(allAppIds).map(appId => {
           const app = appRegistry[appId];
           if (!app) return null;

@@ -2,7 +2,6 @@ import { useSettingsStore } from '../../stores/settingsStore';
 import { useWindowStore } from '../../stores/windowStore';
 import { defaultDesktopIcons } from '../../data/appRegistry';
 import { DesktopIcon } from './DesktopIcon';
-import { AIAssistant } from '../AI/AIAssistant';
 import styles from './Desktop.module.css';
 
 const wallpapers: Record<string, string> = {
@@ -45,7 +44,6 @@ export const Desktop = () => {
           />
         ))}
       </div>
-      <AIAssistant />
     </div>
   );
 };

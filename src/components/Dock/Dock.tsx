@@ -22,6 +22,20 @@ const iconMap: Record<string, LucideIcon> = {
   music: Music,
 };
 
+// Branded icons for dock
+const brandStyles: Record<string, { bg: string; color: string; label: string }> = {
+  'google-docs': { bg: '#4285F4', color: 'white', label: 'D' },
+  'google-sheets': { bg: '#34A853', color: 'white', label: 'S' },
+  'google-slides': { bg: '#FBBC04', color: 'white', label: 'P' },
+  'ms-word': { bg: '#2B579A', color: 'white', label: 'W' },
+  'ms-excel': { bg: '#217346', color: 'white', label: 'X' },
+  'ms-powerpoint': { bg: '#D24726', color: 'white', label: 'P' },
+  'figma': { bg: 'linear-gradient(135deg, #F24E1E 0%, #A259FF 50%, #1ABCFE 100%)', color: 'white', label: 'F' },
+  'notion': { bg: '#000000', color: 'white', label: 'N' },
+  'slack': { bg: '#4A154B', color: 'white', label: '#' },
+  'spotify': { bg: '#1DB954', color: 'white', label: '♫' },
+};
+
 interface DockProps {
   isAIOpen: boolean;
   onToggleAI: () => void;
@@ -70,7 +84,8 @@ export const Dock = ({ isAIOpen, onToggleAI }: DockProps) => {
           const app = appRegistry[appId];
           if (!app) return null;
 
-          const IconComponent = iconMap[app.icon] || Folder;
+          const IconComponent = iconMap[app.icon];
+          const brandStyle = brandStyles[app.icon];
           const isRunning = runningAppIds.has(appId);
           const isActive = windows.some(w => w.appId === appId && w.isActive);
 
@@ -82,7 +97,18 @@ export const Dock = ({ isAIOpen, onToggleAI }: DockProps) => {
               title={app.name}
             >
               <div className={styles.iconWrapper}>
-                <IconComponent size={24} strokeWidth={1.5} />
+                {brandStyle ? (
+                  <div
+                    className={styles.brandedIcon}
+                    style={{ background: brandStyle.bg, color: brandStyle.color }}
+                  >
+                    {brandStyle.label}
+                  </div>
+                ) : IconComponent ? (
+                  <IconComponent size={24} strokeWidth={1.5} />
+                ) : (
+                  <Folder size={24} strokeWidth={1.5} />
+                )}
               </div>
               {isRunning && <div className={styles.runningIndicator} />}
             </button>
